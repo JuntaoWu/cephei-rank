@@ -42,7 +42,7 @@ export let releaseVersion = async (req: Request, res: Response, next: NextFuncti
     const calculatedHmac = hmac.update(JSON.stringify(req.body)).digest().toString("base64");
     const herokuHmac = req.headers["heroku-webhook-hmac-sha256"];
 
-    if (herokuHmac) {
+    if (herokuHmac && (calculatedHmac == herokuHmac)) {
         console.log("calculatedHmac == herokuHmac: " + (calculatedHmac == herokuHmac));
         this.create({
             version: req.body.data.version
