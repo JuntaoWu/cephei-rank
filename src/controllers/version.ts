@@ -17,7 +17,7 @@ export let checkVersion = async (req: Request, res: Response, next: NextFunction
                     message: "OK",
                     data: {
                         version: versions[0].version,
-                        hasUpdate: false
+                        hasUpdate: true
                     }
                 });
             }
