@@ -39,10 +39,11 @@ export let checkVersion = async (req: Request, res: Response, next: NextFunction
 export let releaseVersion = async (req: Request, res: Response, next: NextFunction) => {
     console.log(req.body);
     const hmac = crypto.createHmac("sha256", req.app.get("heroku_secret"));
-    const calculatedHmac = hmac.update(req.body).digest().toString("base64");
-    const herokuHmac = req.headers["Heroku-Webhook-Hmac-SHA256"];
+    const calculatedHmac = hmac.update(JSON.stringify(req.body)).digest().toString("base64");
+    const herokuHmac = req.headers["heroku-webhook-hmac-sha256"];
 
     if (herokuHmac) {
+        console.log("calculatedHmac == herokuHmac: " + (calculatedHmac == herokuHmac));
         this.create({
             version: req.body.data.version
         });
