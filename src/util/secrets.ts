@@ -24,3 +24,5 @@ if (!MONGODB_URI) {
     logger.error("No mongo connection string. Set MONGODB_URI environment variable.");
     process.exit(1);
 }
+
+export const HEROKU_SECRET = process.env["HEROKU_SECRET"];

@@ -12,7 +12,7 @@ import mongoose from "mongoose";
 import passport from "passport";
 import expressValidator from "express-validator";
 import bluebird from "bluebird";
-import { MONGODB_URI, SESSION_SECRET } from "./util/secrets";
+import { MONGODB_URI, SESSION_SECRET, HEROKU_SECRET } from "./util/secrets";
 
 const MongoStore = mongo(session);
 
@@ -41,6 +41,9 @@ mongoose.connect(mongoUrl, {useMongoClient: true}).then(
   console.log("MongoDB connection error. Please make sure MongoDB is running. " + err);
   // process.exit();
 });
+
+// Heroku configuration
+app.set("heroku_secret", HEROKU_SECRET);
 
 // Express configuration
 app.set("port", process.env.PORT || 3000);
