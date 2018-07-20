@@ -24,7 +24,7 @@ import * as homeController from "./controllers/home";
 import * as userController from "./controllers/user";
 import * as apiController from "./controllers/api";
 import * as contactController from "./controllers/contact";
-
+import * as versionController from "./controllers/version";
 
 // API keys and Passport configuration
 import * as passportConfig from "./config/passport";
@@ -107,6 +107,8 @@ app.post("/account/profile", passportConfig.isAuthenticated, userController.post
 app.post("/account/password", passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post("/account/delete", passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get("/account/unlink/:provider", passportConfig.isAuthenticated, userController.getOauthUnlink);
+app.get("/version/check", versionController.checkVersion);
+app.post("/version/release", versionController.releaseVersion);
 
 /**
  * API examples routes.
