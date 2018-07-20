@@ -7,7 +7,7 @@ import * as crypto from "crypto";
 // GET: /version/check
 export let checkVersion = async (req: Request, res: Response, next: NextFunction) => {
 
-    const version = req.query.version || 0;  // list versions greater than query.version.
+    const version = +(req.query.version) || 0;  // list versions greater than query.version.
 
     this.list({ version: version })
         .then((versions: any) => {
