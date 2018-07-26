@@ -73,9 +73,9 @@ export let leaderBoard = async (req: Request, res: Response, next: NextFunction)
                 data: dbResult.map((user, index) => {
                     return {
                         userId: user.userId,
-                        name: user.name,
-                        avatarUrl: user.avatarUrl,
-                        score: user.score,
+                        name: user.name || "",
+                        avatarUrl: user.avatarUrl || "",
+                        score: user.score || 0,
                         rank: rankMap[user.userId.toString()]
                     };
                 }).sort((lhs, rhs) => {
@@ -110,9 +110,9 @@ export let playerRank = async (req: Request, res: Response, next: NextFunction) 
                 message: "OK",
                 data: {
                     userId: user.userId,
-                    name: user.name,
-                    avatarUrl: user.avatarUrl,
-                    score: user.score,
+                    name: user.name || "",
+                    avatarUrl: user.avatarUrl || "",
+                    score: user.score || 0,
                     rank: redisResult + 1
                 }
             });
