@@ -26,3 +26,5 @@ if (!MONGODB_URI) {
 }
 
 export const HEROKU_SECRET = process.env["HEROKU_SECRET"];
+
+export const REDIS_URI = process.env["REDIS_URI"];

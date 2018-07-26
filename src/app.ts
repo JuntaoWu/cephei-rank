@@ -17,14 +17,14 @@ import { MONGODB_URI, SESSION_SECRET, HEROKU_SECRET } from "./util/secrets";
 const MongoStore = mongo(session);
 
 // Load environment variables from .env file, where API keys and passwords are configured
-dotenv.config({ path: ".env.example" });
+dotenv.config({ path: ".env" });
 
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";
 import * as userController from "./controllers/user";
 import * as apiController from "./controllers/api";
 import * as contactController from "./controllers/contact";
-import * as versionController from "./controllers/version";
+import * as userProfileController from "./controllers/userProfile";
 
 // API keys and Passport configuration
 import * as passportConfig from "./config/passport";
@@ -35,7 +35,7 @@ const app = express();
 // Connect to MongoDB
 const mongoUrl = MONGODB_URI;
 (<any>mongoose).Promise = bluebird;
-mongoose.connect(mongoUrl, {useMongoClient: true}).then(
+mongoose.connect(mongoUrl, { useMongoClient: true }).then(
   () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ },
 ).catch(err => {
   console.log("MongoDB connection error. Please make sure MongoDB is running. " + err);
@@ -44,7 +44,6 @@ mongoose.connect(mongoUrl, {useMongoClient: true}).then(
 
 // Heroku configuration
 app.set("heroku_secret", HEROKU_SECRET);
-
 // Express configuration
 app.set("port", process.env.PORT || 3000);
 app.set("views", path.join(__dirname, "../views"));
@@ -110,8 +109,9 @@ app.post("/account/profile", passportConfig.isAuthenticated, userController.post
 app.post("/account/password", passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post("/account/delete", passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get("/account/unlink/:provider", passportConfig.isAuthenticated, userController.getOauthUnlink);
-app.get("/version/check", versionController.checkVersion);
-app.post("/version/release", versionController.releaseVersion);
+app.post("/userProfile/uploadScore", userProfileController.uploadScore);
+app.get("/userProfile/leaderBoard", userProfileController.leaderBoard);
+app.get("/userProfile/playerRank", userProfileController.playerRank);
 
 /**
  * API examples routes.
