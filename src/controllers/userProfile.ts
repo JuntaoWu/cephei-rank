@@ -51,10 +51,21 @@ export let uploadScore = async (req: Request, res: Response, next: NextFunction)
 // POST: /UserProfile/release
 export let leaderBoard = async (req: Request, res: Response, next: NextFunction) => {
     console.log("leaderBoard");
-    const { limit = 50, skip = 0 } = req.query;
+
+    let skip = +(req.query.skip) || 0;
+    skip = Math.max(0, skip);
+
+    let limit = +(req.query.limit) || 50;
+    limit = Math.max(0, limit);
+
     const client = redis.getInstance();
-    client.zrevrange("ring", skip, skip + limit, (redisError, redisResult) => {
+    client.zrevrange("ring", skip, skip + limit - 1, (redisError, redisResult) => {
         console.log(redisResult);
+        const rankMap: any = {};
+        redisResult.forEach((userId: string, index: number) => {
+            rankMap[userId] = skip + index + 1;
+        });
+
         UserProfileModel.find({ userId: { "$in": redisResult } }).then(dbResult => {
             res.json({
                 error: false,
@@ -65,8 +76,10 @@ export let leaderBoard = async (req: Request, res: Response, next: NextFunction)
                         name: user.name,
                         avatarUrl: user.avatarUrl,
                         score: user.score,
-                        rank: index + 1
+                        rank: rankMap[user.userId.toString()]
                     };
+                }).sort((lhs, rhs) => {
+                    return lhs.rank - rhs.rank;
                 })
             });
         });
@@ -84,6 +97,13 @@ export let playerRank = async (req: Request, res: Response, next: NextFunction) 
 
     client.zrevrank("ring", userId, (redisError, redisResult) => {
         console.log(redisResult);
+        if (!redisResult && redisResult !== 0) {
+            return res.json({
+                error: true,
+                message: "No such user",
+                data: undefined
+            });
+        }
         UserProfileModel.findOne({ userId: userId }).then(user => {
             res.json({
                 error: false,
