@@ -67,6 +67,13 @@ export let leaderBoard = async (req: Request, res: Response, next: NextFunction)
         });
 
         UserProfileModel.find({ userId: { "$in": redisResult } }).then(dbResult => {
+            if (!dbResult) {
+                return res.json({
+                    error: true,
+                    message: "No user exists",
+                    data: undefined,
+                });
+            }
             res.json({
                 error: false,
                 message: "OK",
@@ -105,6 +112,13 @@ export let playerRank = async (req: Request, res: Response, next: NextFunction) 
             });
         }
         UserProfileModel.findOne({ userId: userId }).then(user => {
+            if (!user) {
+                return res.json({
+                    error: true,
+                    message: "No such user",
+                    data: undefined
+                });
+            }
             res.json({
                 error: false,
                 message: "OK",
